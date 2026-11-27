@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Google 账号地区一键助手",
+  "version": "1.5.0",
+  "description": "一键直达 Google 账号关联地区修改页面，支持美国免税州一键填充与国家/州下拉框搜索过滤。",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Google 地区一键助手",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://policies.google.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://policies.google.com/*country-association-form*"
+      ],
+      "js": [
+        "presets.js",
+        "region-tags.js",
+        "dropdown-nav.js",
+        "form-filler.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

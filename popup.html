@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google 地区助手</title>
+  <link rel="stylesheet" href="popup-theme.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-top">
+        <div>
+          <h1>Google 地区助手</h1>
+          <p class="subtitle">快捷直达修改页，支持全球国家与州搜索</p>
+        </div>
+        <button id="btnRefreshAccounts" class="refresh-btn" type="button">刷新</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="field-row">
+        <label>Google 账号</label>
+        <div class="account-select" id="accountDropdown">
+          <button type="button" id="accountTrigger" class="account-trigger" aria-expanded="false">
+            <span class="account-trigger-left">
+              <span id="accountSelectedEmail" class="account-email-text">正在识别已登录账号...</span>
+              <span id="accountDefaultTag" class="tag-pill is-default" hidden>默认</span>
+            </span>
+            <span class="account-trigger-right">
+              <span id="accountSelectedTag" class="tag-pill" hidden></span>
+              <span class="multi-arrow">▾</span>
+            </span>
+          </button>
+          <div id="accountMenu" class="account-menu" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sub-label">美国免税州</div>
+      <div id="usPresetRow" class="chip-row"></div>
+
+      <div class="sub-label">常用国家</div>
+      <div id="countryPresetRow" class="chip-row"></div>
+
+      <div class="sub-label-row">
+        <span class="sub-label">全部地区搜索</span>
+        <span id="regionCountHint" class="count-hint"></span>
+      </div>
+      <div class="search-grid">
+        <div class="search-wrap" id="countrySearchWrap">
+          <input id="countrySearchInput" class="search-input" type="text" placeholder="搜索国家/地区" autocomplete="off" />
+          <div id="countrySearchList" class="search-dropdown" hidden></div>
+        </div>
+        <div class="search-wrap" id="stateSearchWrap">
+          <input id="stateSearchInput" class="search-input" type="text" placeholder="搜索州/子地区" autocomplete="off" />
+          <div id="stateSearchList" class="search-dropdown" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button id="btnGoAndFill" class="btn primary">打开并自动填充</button>
+      <button id="btnOpenPageOnly" class="btn secondary">仅打开页面</button>
+    </div>
+
+    <div id="status" class="status" aria-live="polite"></div>
+  </div>
+  <script src="regions-data.js"></script>
+  <script src="presets.js"></script>
+  <script src="region-tags.js"></script>
+  <script src="dropdown-nav.js"></script>
+  <script src="accounts.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
