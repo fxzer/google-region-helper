@@ -153,7 +153,7 @@
       /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
     );
     const regionMatch = pageText.match(
-      /(?:您的账号关联地区为：|Your account is associated with:)\s*([^\n]+)/
+      /(?:您的账号关联地区为：|your account is associated with:)\s*([^\n]+)/i
     );
     const emailText = emailMatch ? emailMatch[0] : "";
     const regionText = regionMatch ? regionMatch[1].trim() : "";
@@ -281,9 +281,10 @@
         setPanelError("");
         try {
           await fillCountryForm({ country: "us", state: st.code });
-          panelCountry = { code: "us", text: "美国" };
-          panelState = getCurrentComboboxSelection(1);
-          if (!panelState.code) panelState = { code: st.code, text: st.name };
+          const pickedCountry = getCurrentComboboxSelection(0);
+          const pickedState = getCurrentComboboxSelection(1);
+          panelCountry = pickedCountry.code ? pickedCountry : { code: "us", text: "美国" };
+          panelState = pickedState.code ? pickedState : { code: st.code, text: st.name };
           syncPanelSelectionUI();
         } catch (err) {
           setPanelError(err.message || "设置失败");
@@ -302,7 +303,8 @@
         setPanelError("");
         try {
           await fillCountryForm({ country: ct.code, state: "" });
-          panelCountry = { code: ct.code, text: ct.name };
+          const pickedCountry = getCurrentComboboxSelection(0);
+          panelCountry = pickedCountry.code ? pickedCountry : { code: ct.code, text: ct.name };
           panelState = { code: "", text: "" };
           syncPanelSelectionUI();
         } catch (err) {
@@ -406,12 +408,70 @@
     return true;
   });
 
-  async function init() {
-    const form = await waitFor(getFormRoot, 8000, 150);
-    if (!form) return;
-    injectHelperPanel();
-    await runPendingTaskIfAny();
+  function isCountryAssociationPage() {
+    return location.pathname.includes("country-association-form");
   }
 
-  init();
+  function removeHelperPanel() {
+    document.getElementById("grh-panel")?.remove();
+  }
+
+  let routeSyncPending = false;
+  let routeSyncRunning = false;
+
+  async function syncPanelWithRoute() {
+    if (routeSyncRunning) {
+      routeSyncPending = true;
+      return;
+    }
+    routeSyncRunning = true;
+    try {
+      do {
+        routeSyncPending = false;
+        if (!isCountryAssociationPage()) {
+          removeHelperPanel();
+          continue;
+        }
+        if (!document.getElementById("grh-panel")) {
+          const form = await waitFor(getFormRoot, 8000, 150);
+          if (!form || !isCountryAssociationPage()) {
+            removeHelperPanel();
+            continue;
+          }
+          injectHelperPanel();
+          await runPendingTaskIfAny();
+        }
+      } while (routeSyncPending);
+    } finally {
+      routeSyncRunning = false;
+    }
+  }
+
+  function startRouteWatcher() {
+    let lastUrl = location.href;
+    let timer = null;
+    const scheduleSync = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const currentUrl = location.href;
+        const onForm = isCountryAssociationPage();
+        const hasPanel = Boolean(document.getElementById("grh-panel"));
+        if (currentUrl !== lastUrl || (onForm && !hasPanel) || (!onForm && hasPanel)) {
+          lastUrl = currentUrl;
+          syncPanelWithRoute();
+        }
+      }, 120);
+    };
+
+    window.addEventListener("popstate", scheduleSync);
+    window.addEventListener("hashchange", scheduleSync);
+
+    const observer = new MutationObserver(scheduleSync);
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  syncPanelWithRoute();
+  startRouteWatcher();
 })();

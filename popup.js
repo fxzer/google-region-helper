@@ -144,7 +144,12 @@ function setupSearchInput({ inputId, listId, wrapId, getOptions, onSelect }) {
     const q = query.trim().toLowerCase();
     const all = getOptions();
     matches = q
-      ? all.filter((o) => o.name.toLowerCase().includes(q) || o.code.toLowerCase().includes(q))
+      ? all.filter(
+          (o) =>
+            o.name.toLowerCase().includes(q) ||
+            o.code.toLowerCase().includes(q) ||
+            (o.en && o.en.toLowerCase().includes(q))
+        )
       : all;
 
     list.replaceChildren();

@@ -27,7 +27,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://policies.google.com/*country-association-form*"
+        "https://policies.google.com/*"
       ],
       "js": [
         "presets.js",
