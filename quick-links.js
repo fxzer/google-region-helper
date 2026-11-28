@@ -50,7 +50,7 @@ window.GRH_QUICK_LINKS = (() => {
     },
     {
       id: "account",
-      title: "优惠与账号管理",
+      title: "优惠、隐私与账号",
       items: [
         {
           id: "ai-student",
@@ -58,6 +58,13 @@ window.GRH_QUICK_LINKS = (() => {
           desc: "查看 Google One / Gemini 学生认证与优惠资格",
           badge: "活动页",
           buildUrl: (idx) => withPathSlot("https://one.google.com", "", "/ai-student", idx),
+        },
+        {
+          id: "gemini-activity",
+          title: "Gemini 隐私与训练设置",
+          desc: "管理 Gemini 活动记录，关闭对话数据用于 AI 模型训练",
+          badge: "myactivity",
+          buildUrl: (idx) => withPathSlot("https://myactivity.google.com", "", "/product/gemini", idx),
         },
         {
           id: "delete-services",
