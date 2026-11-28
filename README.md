@@ -43,8 +43,9 @@
 | **账单与订阅** | **付款资料设置** | 直达 `pay.google.com/payments/u/{i}/home#settings`，查看付款资料国家/地区、ID 或在换区前关闭旧付款资料。 |
 | **账单与订阅** | **Google Play 订阅管理** | 打开 `play.google.com/store/account/subscriptions?authuser={i}`，查看或取消 Play 商店中的自动续费订阅与历史订单。 |
 | **账单与订阅** | **Google One 设置** | 打开 `one.google.com/u/{i}/settings`，管理会员方案、家庭共享或取消 Google One 订阅。 |
-| **优惠与账号管理** | **学生优惠入口** | 打开 `one.google.com/u/{i}/ai-student`，查看 Google One / Gemini 学生认证活动及优惠资格。 |
-| **优惠与账号管理** | **删除 Google 服务** | 打开 `myaccount.google.com/u/{i}/deleteservices`，进入当前账号的单项服务管理页（**详细安全说明见下文**）。 |
+| **优惠、隐私与账号** | **学生优惠入口** | 打开 `one.google.com/u/{i}/ai-student`，查看 Google One / Gemini 学生认证活动及优惠资格。 |
+| **优惠、隐私与账号** | **Gemini 隐私与训练设置** | 打开 `myactivity.google.com/u/{i}/product/gemini`，管理 Gemini 应用历史记录，可关闭「使用对话内容协助训练生成式 AI 模型」。 |
+| **优惠、隐私与账号** | **删除 Google 服务** | 打开 `myaccount.google.com/u/{i}/deleteservices`，进入当前账号的单项服务管理页（**详细安全说明见下文**）。 |
 
 #### 关于「删除 Google 服务」的安全说明
 
