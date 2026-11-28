@@ -6,6 +6,7 @@
   <title>Google 地区助手</title>
   <link rel="stylesheet" href="popup-theme.css" />
   <link rel="stylesheet" href="popup.css" />
+  <link rel="stylesheet" href="popup-tabs.css" />
 </head>
 <body>
   <div class="app">
@@ -13,7 +14,7 @@
       <div class="header-top">
         <div>
           <h1>Google 地区助手</h1>
-          <p class="subtitle">快捷直达修改页，支持全球国家与州搜索</p>
+          <p class="subtitle">快捷直达地区修改与常用账号管理入口</p>
         </div>
         <button id="btnRefreshAccounts" class="refresh-btn" type="button">刷新</button>
       </div>
@@ -38,32 +39,44 @@
       </div>
     </section>
 
-    <section class="card">
-      <div class="sub-label">美国免税州</div>
-      <div id="usPresetRow" class="chip-row"></div>
+    <div class="tab-bar" role="tablist" aria-label="功能分区">
+      <button id="tabRegion" class="tab-btn is-active" type="button" role="tab" aria-selected="true" aria-controls="panelRegion" data-tab="region">地区修改</button>
+      <button id="tabShortcuts" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="panelShortcuts" data-tab="shortcuts">快捷入口</button>
+    </div>
 
-      <div class="sub-label">常用国家</div>
-      <div id="countryPresetRow" class="chip-row"></div>
+    <div id="panelRegion" class="tab-panel" role="tabpanel" aria-labelledby="tabRegion">
+      <section class="card">
+        <div class="sub-label">美国免税州</div>
+        <div id="usPresetRow" class="chip-row"></div>
 
-      <div class="sub-label-row">
-        <span class="sub-label">全部地区搜索</span>
-        <span id="regionCountHint" class="count-hint"></span>
-      </div>
-      <div class="search-grid">
-        <div class="search-wrap" id="countrySearchWrap">
-          <input id="countrySearchInput" class="search-input" type="text" placeholder="搜索国家/地区" autocomplete="off" />
-          <div id="countrySearchList" class="search-dropdown" hidden></div>
+        <div class="sub-label">常用国家</div>
+        <div id="countryPresetRow" class="chip-row"></div>
+
+        <div class="sub-label-row">
+          <span class="sub-label">全部地区搜索</span>
+          <span id="regionCountHint" class="count-hint"></span>
         </div>
-        <div class="search-wrap" id="stateSearchWrap">
-          <input id="stateSearchInput" class="search-input" type="text" placeholder="搜索州/子地区" autocomplete="off" />
-          <div id="stateSearchList" class="search-dropdown" hidden></div>
+        <div class="search-grid">
+          <div class="search-wrap" id="countrySearchWrap">
+            <input id="countrySearchInput" class="search-input" type="text" placeholder="搜索国家/地区" autocomplete="off" />
+            <div id="countrySearchList" class="search-dropdown" hidden></div>
+          </div>
+          <div class="search-wrap" id="stateSearchWrap">
+            <input id="stateSearchInput" class="search-input" type="text" placeholder="搜索州/子地区" autocomplete="off" />
+            <div id="stateSearchList" class="search-dropdown" hidden></div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <div class="actions">
-      <button id="btnGoAndFill" class="btn primary">打开并自动填充</button>
-      <button id="btnOpenPageOnly" class="btn secondary">仅打开页面</button>
+      <div class="actions">
+        <button id="btnGoAndFill" class="btn primary">打开并自动填充</button>
+        <button id="btnOpenPageOnly" class="btn secondary">仅打开页面</button>
+      </div>
+    </div>
+
+    <div id="panelShortcuts" class="tab-panel" role="tabpanel" aria-labelledby="tabShortcuts" hidden>
+      <div id="quickLinksGroups" class="quick-links-groups"></div>
+      <div class="quick-account-hint">将使用上方选中的 Google 账号在新标签页打开</div>
     </div>
 
     <div id="status" class="status" aria-live="polite"></div>
@@ -73,6 +86,7 @@
   <script src="region-tags.js"></script>
   <script src="dropdown-nav.js"></script>
   <script src="accounts.js"></script>
+  <script src="quick-links.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

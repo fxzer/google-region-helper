@@ -11,12 +11,14 @@ const DEFAULT_CONFIG = {
   accountIndex: "",
   country: "us",
   state: "OR",
+  activeTab: "region",
 };
 
 let cachedAccounts = [];
 let selectedAccountIndex = "";
 let selectedCountry = "us";
 let selectedState = "OR";
+let activeTab = "region";
 
 function getRegionsData() {
   return window.GRH_REGIONS_DATA || { countries: [], usStates: [] };
@@ -212,6 +214,7 @@ async function saveConfig() {
     accountIndex: selectedAccountIndex,
     country: selectedCountry,
     state: selectedState,
+    activeTab,
   };
   try {
     await chrome.storage.local.set({ [STORAGE_KEYS.CONFIG]: cfg });
@@ -227,9 +230,11 @@ async function loadConfig() {
     const cfg = { ...DEFAULT_CONFIG, ...(data[STORAGE_KEYS.CONFIG] || {}) };
     selectedCountry = cfg.country || "us";
     selectedState = cfg.country === "us" ? (cfg.state || "OR") : "";
+    setActiveTab(cfg.activeTab === "shortcuts" ? "shortcuts" : "region", { save: false });
     syncTargetRegionUI();
     return cfg;
   } catch {
+    setActiveTab("region", { save: false });
     syncTargetRegionUI();
     return DEFAULT_CONFIG;
   }
@@ -320,8 +325,63 @@ async function handleOpenPageOnly() {
   setStatus("已打开修改地区页面");
 }
 
+function getSelectedAccountLabel() {
+  const acc = cachedAccounts.find((a) => String(a.index) === String(selectedAccountIndex));
+  if (acc?.email) return acc.email;
+  if (selectedAccountIndex !== "" && selectedAccountIndex !== null) return `/u/${selectedAccountIndex}`;
+  return "默认账号";
+}
+
+function setActiveTab(tabName, { save = true } = {}) {
+  activeTab = tabName === "shortcuts" ? "shortcuts" : "region";
+  const isRegion = activeTab === "region";
+
+  const tabRegion = document.getElementById("tabRegion");
+  const tabShortcuts = document.getElementById("tabShortcuts");
+  const panelRegion = document.getElementById("panelRegion");
+  const panelShortcuts = document.getElementById("panelShortcuts");
+
+  if (tabRegion && tabShortcuts && panelRegion && panelShortcuts) {
+    tabRegion.classList.toggle("is-active", isRegion);
+    tabRegion.setAttribute("aria-selected", String(isRegion));
+    tabShortcuts.classList.toggle("is-active", !isRegion);
+    tabShortcuts.setAttribute("aria-selected", String(!isRegion));
+    panelRegion.hidden = !isRegion;
+    panelShortcuts.hidden = isRegion;
+  }
+
+  if (save) {
+    setStatus("");
+    saveConfig();
+  }
+}
+
+async function handleOpenQuickLink(item) {
+  const cfg = await saveConfig();
+  const targetUrl = item.buildUrl(cfg.accountIndex);
+  await chrome.tabs.create({ url: targetUrl });
+  setStatus(`已打开：${item.title}（${getSelectedAccountLabel()}）`);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   renderPresetChips();
+  window.GRH_QUICK_LINKS?.render({
+    containerId: "quickLinksGroups",
+    onOpen: handleOpenQuickLink,
+  });
+
+  const tabButtons = Array.from(document.querySelectorAll(".tab-btn"));
+  tabButtons.forEach((btn, idx) => {
+    btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
+    btn.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      const nextIdx = (idx + (e.key === "ArrowRight" ? 1 : -1) + tabButtons.length) % tabButtons.length;
+      const nextBtn = tabButtons[nextIdx];
+      nextBtn.focus();
+      setActiveTab(nextBtn.dataset.tab);
+    });
+  });
 
   setupSearchInput({
     inputId: "countrySearchInput",
